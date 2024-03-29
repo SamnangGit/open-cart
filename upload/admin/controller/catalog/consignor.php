@@ -1,19 +1,15 @@
 <?php
-
 namespace Opencart\Admin\Controller\Catalog;
-
 /**
  * Class Product
  *
  * @package Opencart\Admin\Controller\Catalog
  */
-class Consignor extends \Opencart\System\Engine\Controller
-{
+class Consignor extends \Opencart\System\Engine\Controller {
 	/**
 	 * @return void
 	 */
-	public function index(): void
-	{
+	public function index(): void {
 		$this->load->language('catalog/Consignor');
 
 		$this->document->setTitle($this->language->get('heading_title'));
@@ -51,12 +47,12 @@ class Consignor extends \Opencart\System\Engine\Controller
 
 		$data['breadcrumbs'][] = [
 			'text' => $this->language->get('heading_title'),
-			'href' => $this->url->link('catalog/consignee', 'user_token=' . $this->session->data['user_token'] . $url)
+			'href' => $this->url->link('catalog/product', 'user_token=' . $this->session->data['user_token'] . $url)
 		];
 
-		$data['add'] = $this->url->link('catalog/consignee.form', 'user_token=' . $this->session->data['user_token'] . $url);
-		$data['copy'] = $this->url->link('catalog/consignee.copy', 'user_token=' . $this->session->data['user_token']);
-		$data['delete'] = $this->url->link('catalog/consignee.delete', 'user_token=' . $this->session->data['user_token']);
+		$data['add'] = $this->url->link('catalog/product.form', 'user_token=' . $this->session->data['user_token'] . $url);
+		$data['copy'] = $this->url->link('catalog/product.copy', 'user_token=' . $this->session->data['user_token']);
+		$data['delete'] = $this->url->link('catalog/product.delete', 'user_token=' . $this->session->data['user_token']);
 
 		$data['list'] = $this->getList();
 
@@ -74,8 +70,7 @@ class Consignor extends \Opencart\System\Engine\Controller
 	/**
 	 * @return void
 	 */
-	public function list(): void
-	{
+	public function list(): void {
 		$this->load->language('catalog/Consignor');
 
 		$this->response->setOutput($this->getList());
@@ -84,8 +79,7 @@ class Consignor extends \Opencart\System\Engine\Controller
 	/**
 	 * @return string
 	 */
-	protected function getList(): string
-	{
+	protected function getList(): string {
 		if (isset($this->request->get['filter_vendor'])) {
 			$filter_vendor = $this->request->get['filter_vendor'];
 		} else {
@@ -120,7 +114,7 @@ class Consignor extends \Opencart\System\Engine\Controller
 			$url .= '&page=' . $this->request->get['page'];
 		}
 
-		$data['action'] = $this->url->link('catalog/consignee.list', 'user_token=' . $this->session->data['user_token'] . $url);
+		$data['action'] = $this->url->link('catalog/product.list', 'user_token=' . $this->session->data['user_token'] . $url);
 
 		$data['products'] = [];
 
@@ -132,7 +126,7 @@ class Consignor extends \Opencart\System\Engine\Controller
 			'limit'           => $this->config->get('config_pagination_admin')
 		];
 
-		$this->load->model('catalog/consignee');
+		$this->load->model('catalog/product');
 
 		$this->load->model('tool/image');
 
@@ -163,12 +157,12 @@ class Consignor extends \Opencart\System\Engine\Controller
 
 			// Initialize an empty array to hold category paths
 			$category_paths = array();
-
+			
 			// Loop through categories and build category paths
 			foreach ($categories as $category) {
 				$category_paths[] = $category['category_path'];
 			}
-
+			
 			// Join category paths with a separator (e.g., comma)
 			$category_list = implode(', ', $category_paths);
 
@@ -182,8 +176,8 @@ class Consignor extends \Opencart\System\Engine\Controller
 				'quantity'   => $result['quantity'],
 				'status'     => $result['status'],
 				'categories' => $category_list, // Include category information
-				'edit'       => $this->url->link('catalog/consignee.form', 'user_token=' . $this->session->data['user_token'] . '&product_id=' . $result['product_id'] . ($result['master_id'] ? '&master_id=' . $result['master_id'] : '') . $url),
-				'variant'    => (!$result['master_id'] ? $this->url->link('catalog/consignee.form', 'user_token=' . $this->session->data['user_token'] . '&master_id=' . $result['product_id'] . $url) : '')
+				'edit'       => $this->url->link('catalog/product.form', 'user_token=' . $this->session->data['user_token'] . '&product_id=' . $result['product_id'] . ($result['master_id'] ? '&master_id=' . $result['master_id'] : '') . $url),
+				'variant'    => (!$result['master_id'] ? $this->url->link('catalog/product.form', 'user_token=' . $this->session->data['user_token'] . '&master_id=' . $result['product_id'] . $url) : '')
 			];
 		}
 
@@ -219,7 +213,7 @@ class Consignor extends \Opencart\System\Engine\Controller
 			'total' => $product_total,
 			'page'  => $page,
 			'limit' => $this->config->get('config_pagination_admin'),
-			'url'   => $this->url->link('catalog/consignee.list', 'user_token=' . $this->session->data['user_token'] . $url . '&page={page}')
+			'url'   => $this->url->link('catalog/product.list', 'user_token=' . $this->session->data['user_token'] . $url . '&page={page}')
 		]);
 
 		$data['results'] = sprintf($this->language->get('text_pagination'), ($product_total) ? (($page - 1) * $this->config->get('config_pagination_admin')) + 1 : 0, ((($page - 1) * $this->config->get('config_pagination_admin')) > ($product_total - $this->config->get('config_pagination_admin'))) ? $product_total : ((($page - 1) * $this->config->get('config_pagination_admin')) + $this->config->get('config_pagination_admin')), $product_total, ceil($product_total / $this->config->get('config_pagination_admin')));
@@ -233,8 +227,7 @@ class Consignor extends \Opencart\System\Engine\Controller
 	/**
 	 * @return void
 	 */
-	public function form(): void
-	{
+	public function form(): void {
 		$this->load->language('catalog/Consignor');
 
 		$this->document->setTitle($this->language->get('heading_title'));
@@ -250,9 +243,9 @@ class Consignor extends \Opencart\System\Engine\Controller
 		$data['config_file_max_size'] = ((int)$this->config->get('config_file_max_size') * 1024 * 1024);
 
 		if (isset($this->request->get['master_id'])) {
-			$this->load->model('catalog/consignee');
+			$this->load->model('catalog/product');
 
-			$url = $this->url->link('catalog/consignee.form', 'user_token=' . $this->session->data['user_token'] . '&product_id=' . $this->request->get['master_id']);
+			$url = $this->url->link('catalog/product.form', 'user_token=' . $this->session->data['user_token'] . '&product_id=' . $this->request->get['master_id']);
 
 			$data['text_variant'] = sprintf($this->language->get('text_variant'), $url, $url);
 		} else {
@@ -290,7 +283,7 @@ class Consignor extends \Opencart\System\Engine\Controller
 
 		$data['breadcrumbs'][] = [
 			'text' => $this->language->get('heading_title'),
-			'href' => $this->url->link('catalog/consignee', 'user_token=' . $this->session->data['user_token'] . $url)
+			'href' => $this->url->link('catalog/product', 'user_token=' . $this->session->data['user_token'] . $url)
 		];
 
 		$url = '';
@@ -311,8 +304,8 @@ class Consignor extends \Opencart\System\Engine\Controller
 			$url .= '&page=' . $this->request->get['page'];
 		}
 
-		$data['save'] = $this->url->link('catalog/consignee.save', 'user_token=' . $this->session->data['user_token']);
-		$data['back'] = $this->url->link('catalog/consignee', 'user_token=' . $this->session->data['user_token'] . $url);
+		$data['save'] = $this->url->link('catalog/product.save', 'user_token=' . $this->session->data['user_token']);
+		$data['back'] = $this->url->link('catalog/product', 'user_token=' . $this->session->data['user_token'] . $url);
 		$data['upload'] = $this->url->link('tool/upload.upload', 'user_token=' . $this->session->data['user_token']);
 
 		if (isset($this->request->get['product_id'])) {
@@ -331,7 +324,7 @@ class Consignor extends \Opencart\System\Engine\Controller
 		}
 
 		if ($product_id) {
-			$this->load->model('catalog/consignee');
+			$this->load->model('catalog/product');
 
 			$product_info = $this->model_catalog_product->getProduct($product_id);
 		}
@@ -917,8 +910,7 @@ class Consignor extends \Opencart\System\Engine\Controller
 	/**
 	 * @return void
 	 */
-	public function save(): void
-	{
+	public function save(): void {
 		$this->load->language('catalog/Consignor');
 
 		$json = [];
@@ -941,7 +933,7 @@ class Consignor extends \Opencart\System\Engine\Controller
 			$json['error']['model'] = $this->language->get('error_model');
 		}
 
-		$this->load->model('catalog/consignee');
+		$this->load->model('catalog/product');
 
 		if ($this->request->post['master_id']) {
 			$product_options = $this->model_catalog_product->getOptions($this->request->post['master_id']);
@@ -1011,8 +1003,7 @@ class Consignor extends \Opencart\System\Engine\Controller
 	/**
 	 * @return void
 	 */
-	public function delete(): void
-	{
+	public function delete(): void {
 		$this->load->language('catalog/Consignor');
 
 		$json = [];
@@ -1023,12 +1014,12 @@ class Consignor extends \Opencart\System\Engine\Controller
 			$selected = [];
 		}
 
-		if (!$this->user->hasPermission('modify', 'catalog/consignee')) {
+		if (!$this->user->hasPermission('modify', 'catalog/product')) {
 			$json['error'] = $this->language->get('error_permission');
 		}
 
 		if (!$json) {
-			$this->load->model('catalog/consignee');
+			$this->load->model('catalog/product');
 
 			foreach ($selected as $product_id) {
 				$this->model_catalog_product->deleteProduct($product_id);
@@ -1044,8 +1035,7 @@ class Consignor extends \Opencart\System\Engine\Controller
 	/**
 	 * @return void
 	 */
-	public function copy(): void
-	{
+	public function copy(): void {
 		$this->load->language('catalog/Consignor');
 
 		$json = [];
@@ -1056,12 +1046,12 @@ class Consignor extends \Opencart\System\Engine\Controller
 			$selected = [];
 		}
 
-		if (!$this->user->hasPermission('modify', 'catalog/consignee')) {
+		if (!$this->user->hasPermission('modify', 'catalog/product')) {
 			$json['error'] = $this->language->get('error_permission');
 		}
 
 		if (!$json) {
-			$this->load->model('catalog/consignee');
+			$this->load->model('catalog/product');
 
 			foreach ($selected as $product_id) {
 				$this->model_catalog_product->copyProduct($product_id);
@@ -1077,8 +1067,7 @@ class Consignor extends \Opencart\System\Engine\Controller
 	/**
 	 * @return void
 	 */
-	public function report(): void
-	{
+	public function report(): void {
 		$this->load->language('catalog/Consignor');
 
 		$this->response->setOutput($this->getReport());
@@ -1087,15 +1076,14 @@ class Consignor extends \Opencart\System\Engine\Controller
 	/**
 	 * @return string
 	 */
-	public function getReport(): string
-	{
+	public function getReport(): string {
 		if (isset($this->request->get['product_id'])) {
 			$product_id = (int)$this->request->get['product_id'];
 		} else {
 			$product_id = 0;
 		}
 
-		if (isset($this->request->get['page']) && $this->request->get['route'] == 'catalog/consignee.report') {
+		if (isset($this->request->get['page']) && $this->request->get['route'] == 'catalog/product.report') {
 			$page = (int)$this->request->get['page'];
 		} else {
 			$page = 1;
@@ -1105,7 +1093,7 @@ class Consignor extends \Opencart\System\Engine\Controller
 
 		$data['reports'] = [];
 
-		$this->load->model('catalog/consignee');
+		$this->load->model('catalog/product');
 		$this->load->model('setting/store');
 
 		$results = $this->model_catalog_product->getReports($product_id, ($page - 1) * $limit, $limit);
@@ -1135,7 +1123,7 @@ class Consignor extends \Opencart\System\Engine\Controller
 			'total' => $report_total,
 			'page'  => $page,
 			'limit' => $limit,
-			'url'   => $this->url->link('catalog/consignee.report', 'user_token=' . $this->session->data['user_token'] . '&product_id=' . $product_id . '&page={page}')
+			'url'   => $this->url->link('catalog/product.report', 'user_token=' . $this->session->data['user_token'] . '&product_id=' . $product_id . '&page={page}')
 		]);
 
 		$data['results'] = sprintf($this->language->get('text_pagination'), ($report_total) ? (($page - 1) * $limit) + 1 : 0, ((($page - 1) * $limit) > ($report_total - $limit)) ? $report_total : ((($page - 1) * $limit) + $limit), $report_total, ceil($report_total / $limit));
@@ -1146,8 +1134,7 @@ class Consignor extends \Opencart\System\Engine\Controller
 	/**
 	 * @return void
 	 */
-	public function autocomplete(): void
-	{
+	public function autocomplete(): void {
 		$json = [];
 
 		if (isset($this->request->get['filter_vendor'])) {
@@ -1168,7 +1155,7 @@ class Consignor extends \Opencart\System\Engine\Controller
 			'limit'        => $limit
 		];
 
-		$this->load->model('catalog/consignee');
+		$this->load->model('catalog/product');
 		$this->load->model('catalog/option');
 		$this->load->model('catalog/subscription_plan');
 		$this->load->model('catalog/category');
